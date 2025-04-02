@@ -1,33 +1,41 @@
-import { Link } from 'react-router-dom';
-import { Home, Heart } from "lucide-react";
+import { useState } from "react";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { Link } from "react-router-dom";
+import logo from "/logo2.png"; 
 
-const SideBar = () => {
+const Navbar = ({ theme, toggleTheme }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <TopNavBar />
+    <nav className="flex items-center justify-between p-4 bg-primary text-black">
+      {/* Logo */}
+      <Link to="/">
+        <img src={logo} alt="RecipeFinder Logo" className="h-12 w-auto" />
+      </Link>
+
+      {/* Mobile Menu Toggle */}
+      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+        {menuOpen ? <X size={28} /> : <Menu size={28} />}
+      </button>
+
+      {/* Nav Links  */}
+      <div
+        className={`absolute md:static right-0 top-16 w-full md:w-auto bg-primary md:bg-transparent flex flex-col md:flex-row md:items-center  gap-4 p-4 md:p-0 ${
+          menuOpen ? "block " : "hidden md:flex "
+        }`}
+      >
+        <Link to="/" className="hover:text-accent font-bold hover:text-[#081269] transition">Home</Link>
+        <Link to="/search" className="hover:text-accent font-bold hover:text-[#081269] transition">Search</Link>
+        <Link to="/favorites" className="hover:text-accent font-bold hover:text-[#081269] transition">Favorites</Link>
+        <Link to="/about" className="hover:text-accent font-bold hover:text-[#081269] transition">About</Link>
+
+        {/* Theme Toggle */}
+        <button onClick={toggleTheme} className="p-2">
+          {theme === "light" ? <Sun size={24} /> : <Moon size={24} />}
+        </button>
+      </div>
+    </nav>
   );
 };
 
-export default SideBar;
-
-const TopNavBar = () => {
-  return (
-    <div className='w-full flex justify-between items-center border-b p-4 bg-white fixed top-0 left-0 z-10'>
-      {/* Left-aligned Navigation Links */}
-      <div className='flex gap-6'>
-        <Link to={"/"} className='flex items-center gap-1'>
-          <Home size={"24"} />
-          <span className='font-bold hidden md:block'>Home</span>
-        </Link>
-        <Link to={"/favorites"} className='flex items-center gap-1'>
-          <Heart size={"24"} />
-          <span className='font-bold hidden md:block'>Favorites</span>
-        </Link>
-      </div>
-
-      {/* Right-aligned Logo */}
-      <div>
-        <img src='/logo.png' alt="logo" className='h-8 md:h-12' />
-      </div>
-    </div>
-  );
-};
+export default Navbar;
