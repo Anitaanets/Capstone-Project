@@ -1,5 +1,58 @@
 import { useState } from "react";
-import RecipeCard from "../components/RecipeCard";
+import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const RecipeCard = ({ recipe }) => {
+  const [isFavorite, setIsFavorite] = useState(
+    JSON.parse(localStorage.getItem("favorites") || "[]").some(
+      (item) => item.id === recipe.id
+    )
+  );
+
+  const toggleFavorite = () => {
+    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+    if (isFavorite) {
+      favorites = favorites.filter((item) => item.id !== recipe.id);
+    } else {
+      favorites.push(recipe);
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg relative">
+      <img
+        src={recipe.image}
+        alt={recipe.title}
+        className="w-full h-40 object-cover rounded-md"
+      />
+      <h2 className="text-lg font-semibold text-primary mt-2">{recipe.title}</h2>
+      <button
+        onClick={toggleFavorite}
+        className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-200 transition"
+      >
+        <Heart
+          size={24}
+          color={isFavorite ? "red" : "gray"}
+          className={isFavorite ? "text-red-500" : "text-gray-500"}
+        />
+      </button>
+      {recipe.sourceUrl && (
+        <a
+          href={recipe.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block mt-2 text-[#676a8a] font-bold hover:underline"
+        >
+          View Recipe
+        </a>
+      )}
+    </div>
+  );
+};
 
 const Search = () => {
   const [query, setQuery] = useState("");
@@ -7,62 +60,58 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchRecipes = async () => {
-    if (!query) return;
+  const handleSearch = async (event) => {
+    event.preventDefault();
     setLoading(true);
     setError("");
 
     try {
       const response = await fetch(
-        `https://api.edamam.com/search?q=${query}&app_id=${import.meta.env.VITE_EDAMAM_APP_ID}&app_key=${import.meta.env.VITE_EDAMAM_APP_KEY}`
+        `https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=9&apiKey=${import.meta.env.VITE_SPOONACULAR_API_KEY}`
       );
       const data = await response.json();
 
-      if (data.hits.length === 0) {
-        setError("No recipes found. Try another search!");
+      if (data.results) {
+        setRecipes(data.results);
       } else {
-        setRecipes(data.hits);
+        setError("No recipes found.");
       }
     } catch (err) {
-      setError("Failed to fetch recipes. Please try again.");
+      setError("Failed to load recipes.");
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-primary text-center mb-4 mt-38 ml-8">
-        Search for Recipes
-      </h1>
+    <div className="flex flex-col items-center justify-center text-center p-6 md:p-12 sm:pl-12">
+      <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 ml-10 mt-20" >Search for Recipes</h1>
+      <p className="text-lg font-bold dark:text-gray-300 mb-6 ml-20">Search specific recipes based on your preferences.</p>
 
-      {/* Search Bar */}
-      <div className=" ml-3 flex justify-center mb-6">
+      <form onSubmit={handleSearch} className="mb-6">
         <input
           type="text"
-          placeholder="Enter a dish..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="p-2 w-80 border rounded-l-lg focus:outline-none"
+          placeholder="Search for a recipe..."
+          className="p-2 border rounded-md"
         />
         <button
-          onClick={fetchRecipes}
-          className="border-2 bg-accent text-white px-4 rounded-r-lg hover:bg-[#081269] transition"
+          type="submit"
+          className="ml-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-orange-500 transition"
         >
           Search
         </button>
-      </div>
+      </form>
 
-      {/* Error Message */}
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {loading && <p className="mt-12">Loading recipes...</p>}
+      {error && <p className="text-red-500 mt-12">{error}</p>}
 
-      {/* Loading Indicator */}
-      {loading && <p className="text-center">Loading...</p>}
-
-      {/* Recipe Results */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {recipes.map((item, index) => (
-          <RecipeCard key={index} recipe={item.recipe} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 ml-12">
+        {recipes.map((recipe) => (
+          <div key={recipe.id} className="bg-[#A4B79B] p-4 rounded-lg shadow-md">
+            <RecipeCard recipe={recipe} />
+          </div>
         ))}
       </div>
     </div>

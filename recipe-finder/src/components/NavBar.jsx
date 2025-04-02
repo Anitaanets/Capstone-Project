@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "/logo2.png"; 
+import logo from "/logo5.png"; 
 
 const Navbar = ({ theme, toggleTheme }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,13 +24,13 @@ const Navbar = ({ theme, toggleTheme }) => {
           menuOpen ? "block " : "hidden md:flex "
         }`}
       >
-        <Link to="/" className="hover:text-accent font-bold hover:text-[#081269] transition">Home</Link>
-        <Link to="/search" className="hover:text-accent font-bold hover:text-[#081269] transition">Search</Link>
-        <Link to="/favorites" className="hover:text-accent font-bold hover:text-[#081269] transition">Favorites</Link>
-        <Link to="/about" className="hover:text-accent font-bold hover:text-[#081269] transition">About</Link>
+        <Link to="/" className="hover:text-accent font-bold hover:text-[#A4B79B] transition transition">Home</Link>
+        <Link to="/search" className="hover:text-accent font-bold hover:text-[#A4B79B] transition transition">Search</Link>
+        <Link to="/favorites" className="hover:text-accent font-bold hover:text-[#A4B79B] transition transition">Favorites</Link>
+        <Link to="/about" className="hover:text-accent font-bold hover:text-[#A4B79B] transition transition">About</Link>
 
         {/* Theme Toggle */}
-        <button onClick={toggleTheme} className="p-2">
+        <button onClick={toggleTheme} className="p-2 hover:text-[#A4B79B] transition">
           {theme === "light" ? <Sun size={24} /> : <Moon size={24} />}
         </button>
       </div>

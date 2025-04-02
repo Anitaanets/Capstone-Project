@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const RecipeDetails = () => {
-  const { recipeLabel } = useParams();
+  const { recipeId } = useParams(); // Use Spoonacular's recipe ID
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,14 +14,14 @@ const RecipeDetails = () => {
 
       try {
         const response = await fetch(
-          `https://api.edamam.com/search?q=${recipeLabel}&app_id=${import.meta.env.VITE_EDAMAM_APP_ID}&app_key=${import.meta.env.VITE_EDAMAM_APP_KEY}`
+          `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${import.meta.env.VITE_SPOONACULAR_API_KEY}`
         );
         const data = await response.json();
 
-        if (data.hits.length === 0) {
+        if (!data || data.status === "failure") {
           setError("Recipe not found.");
         } else {
-          setRecipe(data.hits[0].recipe);
+          setRecipe(data);
         }
       } catch (err) {
         setError("Failed to load recipe.");
@@ -31,16 +31,14 @@ const RecipeDetails = () => {
     };
 
     fetchRecipeDetails();
-  }, [recipeLabel]);
+  }, [recipeId]);
 
   const saveToFavorites = () => {
     const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    const isAlreadyFavorite = savedFavorites.some(
-      (item) => item.recipe.label === recipe.label
-    );
+    const isAlreadyFavorite = savedFavorites.some((item) => item.id === recipe.id);
 
     if (!isAlreadyFavorite) {
-      savedFavorites.push({ recipe });
+      savedFavorites.push(recipe);
       localStorage.setItem("favorites", JSON.stringify(savedFavorites));
       alert("Recipe saved to favorites!");
     } else {
@@ -54,28 +52,33 @@ const RecipeDetails = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-primary">{recipe.label}</h1>
-      <img src={recipe.image} alt={recipe.label} className="w-full my-4 rounded-lg" />
-      
-      <p className="text-lg text-gray-700 dark:text-gray-300">
-        Source: <a href={recipe.url} target="_blank" className="text-accent hover:underline">{recipe.source}</a>
-      </p>
+      {/* Recipe Title */}
+      <h1 className="text-3xl font-bold text-primary">{recipe.title}</h1>
 
+      {/* Recipe Image */}
+      <img src={recipe.image} alt={recipe.title} className="w-full my-4 rounded-lg" />
+
+      {/* Recipe Source Link */}
+      {recipe.sourceUrl && (
+        <p className="text-lg text-gray-700 dark:text-gray-300">
+          Source:{" "}
+          <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+            {recipe.sourceName || "Recipe Source"}
+          </a>
+        </p>
+      )}
+
+      {/* Ingredients List */}
       <h2 className="text-xl font-semibold mt-4">Ingredients:</h2>
       <ul className="list-disc ml-6 text-gray-700 dark:text-gray-300">
-        {recipe.ingredientLines.map((ingredient, index) => (
-          <li key={index}>{ingredient}</li>
+        {recipe.extendedIngredients?.map((ingredient, index) => (
+          <li key={index}>{ingredient.original}</li>
         ))}
       </ul>
 
-      <h2 className="text-xl font-semibold mt-4">Health Labels:</h2>
-      <div className="flex flex-wrap gap-2">
-        {recipe.healthLabels.map((label, index) => (
-          <span key={index} className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-sm rounded-lg">
-            {label}
-          </span>
-        ))}
-      </div>
+      {/* Instructions */}
+      <h2 className="text-xl font-semibold mt-4">Instructions:</h2>
+      <p className="text-gray-700 dark:text-gray-300">{recipe.instructions ? recipe.instructions : "No instructions available."}</p>
 
       {/* Save to Favorites Button */}
       <button

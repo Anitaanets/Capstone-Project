@@ -1,37 +1,41 @@
 import { useState } from "react";
-import { Heart } from "lucide-react"; 
-import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 
 const RecipeCard = ({ recipe }) => {
   const [isFavorite, setIsFavorite] = useState(
     JSON.parse(localStorage.getItem("favorites") || "[]").some(
-      (item) => item.recipe.label === recipe.label
+      (item) => item.id === recipe.id
     )
   );
 
   const toggleFavorite = () => {
     let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
-    if (isFavorite) {
-      favorites = favorites.filter((item) => item.recipe.label !== recipe.label);
+    // Check for existing favorite by ID
+    const existingFavoriteIndex = favorites.findIndex((item) => item.id === recipe.id);
+
+    if (existingFavoriteIndex !== -1) {
+      favorites.splice(existingFavoriteIndex, 1); // Remove favorite if already present
     } else {
-      favorites.push({ recipe });
+      favorites.push(recipe); // Add favorite
     }
 
     localStorage.setItem("favorites", JSON.stringify(favorites));
-    setIsFavorite(!isFavorite); // Toggle favorite status
+    setIsFavorite(existingFavoriteIndex === -1); // Update the state of the heart button
   };
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg relative">
+      {/* Recipe Image */}
       <img
         src={recipe.image}
-        alt={recipe.label}
+        alt={recipe.title}
         className="w-full h-40 object-cover rounded-md"
       />
-      <h2 className="text-lg font-semibold text-primary mt-2">{recipe.label}</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-300">{recipe.source}</p>
-      
+
+      {/* Recipe Title */}
+      <h2 className="text-lg font-semibold text-primary mt-2">{recipe.title}</h2>
+
       {/* Favorite Button */}
       <button
         onClick={toggleFavorite}
@@ -44,23 +48,17 @@ const RecipeCard = ({ recipe }) => {
         />
       </button>
 
-      {/* Link to the recipe page */}
-      <Link
-        to={`/recipe/${encodeURIComponent(recipe.label)}`}
-        className="block mt-2 text-[#676a8a] font-bold hover:underline"
-      >
-        View Recipe
-      </Link>
-
-      {/* YouTube Video Link */}
-      <a
-        href={recipe.videoLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block mt-2 text-[#676a8a] font-bold hover:underline"
-      >
-        Watch on YouTube
-      </a>
+      {/* Link to Detailed Recipe Page */}
+      {recipe.sourceUrl && (
+        <a
+          href={recipe.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block mt-2 text-[#676a8a] font-bold hover:underline"
+        >
+          View Recipe
+        </a>
+      )}
     </div>
   );
 };
