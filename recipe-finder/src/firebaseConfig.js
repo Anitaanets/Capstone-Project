@@ -1,20 +1,19 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
+// Get Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyBFE6MOsxUzsgWyb500i_YERLUGG1VBdtw",
-  authDomain: "recipe-finder-alx.firebaseapp.com",
-  projectId: "recipe-finder-alx",
-  storageBucket: "recipe-finder-alx.firebasestorage.app",
-  messagingSenderId: "747804673023",
-  appId: "1:747804673023:web:b3c46032385f9aafb25dca",
-  measurementId: "G-1TKNZSVF66"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);  // Correct the variable name here
-const auth = getAuth(app);  // Correct variable name to 'auth'
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-export { auth };  // Correct the export as 'auth'
+export { auth };
