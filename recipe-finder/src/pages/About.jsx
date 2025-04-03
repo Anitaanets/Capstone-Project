@@ -18,7 +18,7 @@ const About = () => {
       
       <h2 className="text-xl font-semibold mt-6">API Integration</h2>
       <p className="text-[#a17272] font-bold  dark:text-gray-300">
-        This app is powered by the Edamam Recipe Search API, which provides
+        This app is powered by the Spooncular Search API, which provides
         a wide variety of recipes from all over the world.
       </p>
 

@@ -98,9 +98,9 @@ const Search = () => {
         />
         <button
           type="submit"
-          className="ml-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-orange-500 transition"
+          className="ml-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-[#A4B79B] transition font-bold"
         >
-          Search
+          Search 
         </button>
       </form>
 

@@ -7,15 +7,21 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);  
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); 
+    setError(""); 
+
     try {
       await login(email, password);
-      navigate("/"); // Redirect to the homepage after successful login
+      navigate("/"); 
     } catch (err) {
       setError("Failed to log in. Check your credentials.");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -40,8 +46,12 @@ const LoginPage = () => {
           className="w-full p-2 mb-4 border rounded"
           required
         />
-        <button type="submit" className="w-full p-2 bg-primary text-white rounded font-bold hover:bg-[#A4B79B] ">
-          Login
+        <button 
+          type="submit" 
+          className="w-full p-2 bg-primary text-white rounded font-bold hover:bg-[#A4B79B]" 
+          disabled={loading}  // Disable the button when loading
+        >
+          {loading ? "Loading..." : "Login"} {/* Display loading text */}
         </button>
       </form>
     </div>

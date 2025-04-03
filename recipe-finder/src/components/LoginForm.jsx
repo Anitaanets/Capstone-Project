@@ -1,8 +1,6 @@
-// src/components/LoginForm.jsx
-
 import React, { useState } from 'react';
 
-const LoginForm = ({ onSubmit, error }) => {
+const LoginForm = ({ onSubmit, error, loading }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,7 +10,7 @@ const LoginForm = ({ onSubmit, error }) => {
   };
 
   return (
-    <form  onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div>
         <label>Email</label>
         <input
@@ -32,7 +30,9 @@ const LoginForm = ({ onSubmit, error }) => {
         />
       </div>
       {error && <div>{error}</div>}
-     <button  type="submit">Login</button>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Loading...' : 'Login'}
+      </button>
     </form>
   );
 };

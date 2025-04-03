@@ -22,8 +22,8 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md w-70 text-center mt-20">
-      <div className="flex flex-col items-center">
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md text-center mt-30 w-[70%] sm:w-auto">
+      <div className="flex flex-col items-center ">
         <img 
           src="https://via.placeholder.com/100" 
           alt="Profile" 

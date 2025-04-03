@@ -16,13 +16,13 @@ const Navbar = ({ theme, toggleTheme }) => {
       </Link>
 
       {/* Mobile Menu Toggle */}
-      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+      <button className="md:hidden " onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
 
       {/* Nav Links */}
       <div
-        className={`absolute md:static right-0 top-16 w-full md:w-auto bg-primary md:bg-transparent flex flex-col md:flex-row md:items-center gap-4 p-4 md:p-0 ${
+        className={`absolute md:static right-0 top-16 w-full md:w-auto bg-primary md:bg-transparent flex flex-col md:flex-row md:items-center gap-3 p-4 md:p-0 ${
           menuOpen ? "block" : "hidden md:flex"
         }`}
       >

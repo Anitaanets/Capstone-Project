@@ -7,6 +7,7 @@ const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -34,6 +35,12 @@ const Home = () => {
     fetchRecipes();
   }, []);
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    alert(`Subscribed with: ${email}`);
+    setEmail(""); // Reset the input field
+  };
+
   return (
     <div className="flex flex-col items-center justify-center text-center p-6 md:p-12 sm:pl-12">
       <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 ml-10">Discover Delicious Recipes</h1>
@@ -57,8 +64,30 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Socials */}
-      <div className="mt-8 flex space-x-6">
+      {/* Newsletter Signup */}
+      <div className="mt-12 w-full max-w-md bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-bold text-primary mb-4">Subscribe to Our Newsletter</h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">Get the latest recipes straight to your inbox!</p>
+        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="email"
+            className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 w-full focus:outline-none focus:ring-2 focus:ring-[#A4B79B]"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-[#676a8a] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#A4B79B] transition"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+
+     
+      <div className="mt-4 flex space-x-6">
         <a href="https://www.facebook.com" className="flex items-center gap-2 font-bold text-primary hover:text-[#A4B79B] transition">
           <Facebook size={20} /> Facebook 
         </a>
@@ -69,6 +98,12 @@ const Home = () => {
           <Instagram size={20} /> Instagram
         </a>
       </div>
+       {/* Copyright Notice */}
+       <p className="mt-8 text-sm text-gray-600 dark:text-gray-400">
+        © {new Date().getFullYear()} Annie's Recipe Finder. All rights reserved.
+      </p>
+
+      {/* Socials */}
     </div>
   );
 };
