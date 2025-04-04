@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Facebook, Twitter, Instagram } from "lucide-react"; 
-import RecipeCard from "../components/RecipeCard"; 
+import { Facebook, Twitter, Instagram } from "lucide-react";
+import RecipeCard from "../components/RecipeCard";
+import RecipeModal from "../components/RecipeModal";
+
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -38,7 +41,15 @@ const Home = () => {
   const handleSubscribe = (e) => {
     e.preventDefault();
     alert(`Subscribed with: ${email}`);
-    setEmail(""); // Reset the input field
+    setEmail("");
+  };
+
+  const handleViewDetails = (recipe) => {
+    setSelectedRecipe(recipe);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedRecipe(null);
   };
 
   return (
@@ -59,12 +70,11 @@ const Home = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 ml-12">
         {recipes.map((recipe) => (
           <div key={recipe.id} className="bg-[#A4B79B] p-4 rounded-lg shadow-md">
-            <RecipeCard recipe={recipe} />
+            <RecipeCard recipe={recipe} onViewDetails={handleViewDetails} />
           </div>
         ))}
       </div>
 
-      {/* Newsletter Signup */}
       <div className="mt-12 w-full max-w-md bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold text-primary mb-4">Subscribe to Our Newsletter</h2>
         <p className="text-gray-600 dark:text-gray-300 mb-4">Get the latest recipes straight to your inbox!</p>
@@ -86,10 +96,9 @@ const Home = () => {
         </form>
       </div>
 
-     
       <div className="mt-4 flex space-x-6">
         <a href="https://www.facebook.com" className="flex items-center gap-2 font-bold text-primary hover:text-[#A4B79B] transition">
-          <Facebook size={20} /> Facebook 
+          <Facebook size={20} /> Facebook
         </a>
         <a href="https://www.twitter.com" className="flex items-center gap-2 font-bold text-primary hover:text-[#A4B79B] transition">
           <Twitter size={20} /> Twitter
@@ -98,12 +107,15 @@ const Home = () => {
           <Instagram size={20} /> Instagram
         </a>
       </div>
-       {/* Copyright Notice */}
-       <p className="mt-8 text-sm text-gray-600 dark:text-gray-400">
+
+      <p className="mt-8 text-sm text-gray-600 dark:text-gray-400">
         © {new Date().getFullYear()} Annie's Recipe Finder. All rights reserved.
       </p>
 
-      {/* Socials */}
+      {/* Recipe Modal */}
+      {selectedRecipe && (
+        <RecipeModal recipe={selectedRecipe} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

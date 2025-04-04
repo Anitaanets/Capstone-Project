@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Youtube } from "lucide-react";
 
-const RecipeCard = ({ recipe }) => {
+const RecipeCard = ({ recipe, onViewDetails }) => {
   const [isFavorite, setIsFavorite] = useState(
     JSON.parse(localStorage.getItem("favorites") || "[]").some(
       (item) => item.id === recipe.id
@@ -10,33 +10,53 @@ const RecipeCard = ({ recipe }) => {
 
   const toggleFavorite = () => {
     let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-
-    // Check for existing favorite by ID
     const existingFavoriteIndex = favorites.findIndex((item) => item.id === recipe.id);
 
     if (existingFavoriteIndex !== -1) {
-      favorites.splice(existingFavoriteIndex, 1); // Remove favorite if already present
+      favorites.splice(existingFavoriteIndex, 1);
     } else {
-      favorites.push(recipe); // Add favorite
+      favorites.push(recipe);
     }
 
     localStorage.setItem("favorites", JSON.stringify(favorites));
-    setIsFavorite(existingFavoriteIndex === -1); // Update the state of the heart button
+    setIsFavorite(existingFavoriteIndex === -1);
   };
+
+  // Try to find a YouTube link from API
+  const possibleYouTubeUrl = [recipe.sourceUrl, recipe.spoonacularSourceUrl].find(
+    (url) => url && url.includes("youtube.com")
+  );
+
+  // If not available, fallback to a YouTube search link
+  const youtubeLink = possibleYouTubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(recipe.title)} recipe`;
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg relative">
-      {/* Recipe Image */}
       <img
         src={recipe.image}
         alt={recipe.title}
         className="w-full h-40 object-cover rounded-md"
       />
 
-      {/* Recipe Title */}
       <h2 className="text-lg font-semibold text-primary mt-2">{recipe.title}</h2>
 
-      {/* Favorite Button */}
+      <button
+        onClick={() => onViewDetails(recipe)}
+        className="mt-2 text-[#676a8a] font-bold hover:underline"
+      >
+        View Recipe
+      </button>
+
+      {/*YouTube search link */}
+      <a
+        href={youtubeLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block mt-2 text-red-600 font-bold hover:underline flex items-center gap-1 ml-15"
+      >
+        <Youtube size={18} /> Watch on YouTube
+      </a>
+
       <button
         onClick={toggleFavorite}
         className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-200 transition"
@@ -47,18 +67,6 @@ const RecipeCard = ({ recipe }) => {
           className={isFavorite ? "text-red-500" : "text-gray-500"}
         />
       </button>
-
-      {/* Link to Detailed Recipe Page */}
-      {recipe.sourceUrl && (
-        <a
-          href={recipe.sourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block mt-2 text-[#676a8a] font-bold hover:underline"
-        >
-          View Recipe
-        </a>
-      )}
     </div>
   );
 };
