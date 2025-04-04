@@ -52,7 +52,7 @@ const RecipeCard = ({ recipe, onViewDetails }) => {
         href={youtubeLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="block mt-2 text-red-600 font-bold hover:underline flex items-center gap-1 ml-15"
+        className="block mt-2 text-red-700 font-bold hover:underline flex items-center gap-1 ml-15"
       >
         <Youtube size={18} /> Watch on YouTube
       </a>
